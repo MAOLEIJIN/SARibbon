@@ -4,6 +4,13 @@ set(PROJECT_VERSION_MAJOR 0)
 set(PROJECT_VERSION_MINOR 0)
 set(PROJECT_VERSION_PATCH 1)
 
+if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED VCPKG_ROOT)
+    set(VCPKG_ROOT "$ENV{VCPKG_ROOT}" CACHE PATH "")
+  else()
+  	set(VCPKG_ROOT "E:/vcpkg/vcpkg" CACHE PATH "")		#set vcpkg root if ENV{VCPKG_ROOT} not defined
+endif()
+set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")  # must before project defined
+
 set (PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 if(PROJECT_VERSION_PATCH GREATER 0)
   set (PROJECT_VERSION "${PROJECT_VERSION}.${PROJECT_VERSION_PATCH}")
@@ -27,10 +34,7 @@ endif()
 
 include(CPack)
 
-find_package(Qt6 COMPONENTS Core Widgets Gui)
-if (NOT Qt6_FOUND)
-    find_package(Qt5 5.15 REQUIRED COMPONENTS Core Widgets Gui)
-endif()
+find_package(Qt5 5.15.2 REQUIRED COMPONENTS Core Widgets Gui)
 
 option(BUILD_EXAMPLES "build the examples" OFF)
 option(BUILD_SHARED_LIBS "Build in shared lib mode" ON)
